@@ -1,5 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Face Off</string>
     <string name="face_not_found">No face found</string>
     <string name="face_found">Face exist</string>
     <string name="open_camera">camera</string>

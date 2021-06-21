@@ -1,4 +1,4 @@
-package com.example.androidofflinefacerecognition
+package com.example.facerecognition
 
 import org.junit.Test
 

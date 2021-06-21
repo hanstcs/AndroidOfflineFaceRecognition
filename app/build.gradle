@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
+    id("dagger.hilt.android.plugin")
 }
 
 
@@ -10,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.androidofflinefacerecognition"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -33,12 +35,15 @@ android {
     }
     buildFeatures {
         mlModelBinding true
+        viewBinding true
     }
 }
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation libraries.coreKTX
+    implementation libraries.viewModelKtx
+    implementation libraries.fragmentKtx
     implementation supportDeps.appCompat
     implementation supportDeps.constraintLayout
     implementation supportDeps.material
@@ -48,6 +53,15 @@ dependencies {
     implementation libraries.tensorFlowLite
     implementation libraries.tensorFlowLiteGpu
     implementation libraries.tensorFlowLiteSupport
+    implementation libraries.tensorFlowLiteMetadata
+    implementation libraries.coroutineCore
+    implementation libraries.coroutineAndroid
+    implementation libraries.glide
+    implementation libraries.room
+    implementation libraries.roomCoroutines
+    implementation libraries.hilt
+    kapt libraries.hiltCompiler
+    kapt libraries.roomCompiler
 
     testImplementation testLibraries.jUnit
 
