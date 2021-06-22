@@ -8,4 +8,6 @@
     <string name="btn_switch">Button switch</string>
     <string name="btn_save">Button save</string>
     <string name="failed_capture_photo">Failed to capture photo</string>
+    <string name="model_image">Image model for face recognition</string>
+    <string name="no_image_found">No image found, please add image</string>
 </resources>
