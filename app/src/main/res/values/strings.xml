@@ -7,4 +7,5 @@
     <string name="btn_capture">Capture button</string>
     <string name="btn_switch">Button switch</string>
     <string name="btn_save">Button save</string>
+    <string name="failed_capture_photo">Failed to capture photo</string>
 </resources>
