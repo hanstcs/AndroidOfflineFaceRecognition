@@ -11,7 +11,8 @@ ext {
     faceDetectionVersion = '16.0.0'
     tensorFlowLiteVersion = '2.4.0'
     tensorFlowLiteSupportVersion = '0.2.0'
-    cameraxCoreVersion = '1.0.0-alpha06'
+    cameraxCoreVersion = '1.0.0'
+    cameraViewVersion = '1.0.0-alpha24'
     coroutineVersion = '1.3.3'
     glideVersion = '4.12.0'
     roomVersion = '2.3.0'
@@ -29,7 +30,9 @@ ext {
             fragmentKtx           : "androidx.fragment:fragment-ktx:1.3.4",
             faceDetection         : "com.google.mlkit:face-detection:${faceDetectionVersion}",
             cameraCore            : "androidx.camera:camera-core:${cameraxCoreVersion}",
+            cameraLifecycle       : "androidx.camera:camera-lifecycle:${cameraxCoreVersion}",
             camera2               : "androidx.camera:camera-camera2:${cameraxCoreVersion}",
+            cameraView            : "androidx.camera:camera-view:${cameraViewVersion}",
             tensorFlowLite        : "org.tensorflow:tensorflow-lite:${tensorFlowLiteVersion}",
             tensorFlowLiteGpu     : "org.tensorflow:tensorflow-lite-gpu:${tensorFlowLiteVersion}",
             tensorFlowLiteSupport : "org.tensorflow:tensorflow-lite-support:${tensorFlowLiteSupportVersion}",

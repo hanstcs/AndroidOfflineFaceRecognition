@@ -4,4 +4,7 @@
     <string name="face_found">Face exist</string>
     <string name="open_camera">camera</string>
     <string name="recognition">Recognition</string>
+    <string name="btn_capture">Capture button</string>
+    <string name="btn_switch">Button switch</string>
+    <string name="btn_save">Button save</string>
 </resources>

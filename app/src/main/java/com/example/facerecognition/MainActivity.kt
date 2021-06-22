@@ -1,5 +1,6 @@
 package com.example.facerecognition
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -18,7 +19,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     override fun setupView() {
         binding.btnOpenCamera.setOnClickListener {
-            Toast.makeText(this, "Not implemented", Toast.LENGTH_LONG).show()
+            startActivity(
+                Intent(this, CameraActivity::class.java)
+                    .apply {
+                        putExtra(CameraActivity.EXTRA_FRONT_CAMERA, true)
+                    }
+            )
         }
         binding.btnRecognition.setOnClickListener {
             Toast.makeText(this, "Not implemented", Toast.LENGTH_LONG).show()

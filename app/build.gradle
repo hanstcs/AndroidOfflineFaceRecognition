@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-android-extensions'
     id 'kotlin-kapt'
     id("dagger.hilt.android.plugin")
 }
@@ -50,6 +51,8 @@ dependencies {
     implementation libraries.faceDetection
     implementation libraries.cameraCore
     implementation libraries.camera2
+    implementation libraries.cameraView
+    implementation libraries.cameraLifecycle
     implementation libraries.tensorFlowLite
     implementation libraries.tensorFlowLiteGpu
     implementation libraries.tensorFlowLiteSupport
