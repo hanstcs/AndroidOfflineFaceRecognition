@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.CameraSelector.DEFAULT_BACK_CAMERA
+import androidx.camera.core.CameraSelector.DEFAULT_FRONT_CAMERA
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
@@ -27,13 +29,15 @@ import java.io.File
 class CameraActivity : BaseActivity<ActivityCameraBinding>() {
     private val viewModel: CameraCaptureViewModel by viewModels()
     private var imageCapture: ImageCapture? = null
+    private lateinit var cameraSelector: CameraSelector
 
     override fun bindingInflater(layoutInflater: LayoutInflater) =
         ActivityCameraBinding.inflate(layoutInflater)
 
     override fun setupView() {
+        initDataFromIntent()
         if (isAllPermissionsGranted()) {
-            startCamera()
+            startCamera(cameraSelector)
         } else {
             ActivityCompat.requestPermissions(
                 this,
@@ -43,6 +47,9 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
         }
         binding.btnCapture.setOnClickListener {
             takePhoto()
+        }
+        binding.btnSwitch.setOnClickListener {
+            switchCamera()
         }
     }
 
@@ -76,7 +83,15 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
 
     override fun loadData() {}
 
-    private fun startCamera() {
+    private fun initDataFromIntent() {
+        val isFrontCamera = intent?.getBooleanExtra(
+            DetectionActivity.EXTRA_FRONT_CAMERA,
+            true
+        )
+        cameraSelector = if (isFrontCamera!!) DEFAULT_FRONT_CAMERA else DEFAULT_BACK_CAMERA
+    }
+
+    private fun startCamera(cameraSelector: CameraSelector) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener({
@@ -88,12 +103,11 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
                 }
             imageCapture = ImageCapture.Builder().build()
-
             try {
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
                     this,
-                    CameraSelector.DEFAULT_BACK_CAMERA,
+                    cameraSelector,
                     preview,
                     imageCapture
                 )
@@ -101,6 +115,13 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                 Log.e(TAG, "Use case binding failed", e)
             }
         }, ContextCompat.getMainExecutor(this))
+    }
+
+    private fun switchCamera() {
+        cameraSelector =
+            if (DEFAULT_BACK_CAMERA == cameraSelector) DEFAULT_FRONT_CAMERA
+            else DEFAULT_BACK_CAMERA
+        startCamera(cameraSelector)
     }
 
     private fun takePhoto() {
