@@ -8,34 +8,37 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.camera.core.CameraSelector
+import androidx.camera.core.*
 import androidx.camera.core.CameraSelector.DEFAULT_BACK_CAMERA
 import androidx.camera.core.CameraSelector.DEFAULT_FRONT_CAMERA
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.facerecognition.analyser.FrameDetectionAnalyser
 import com.example.facerecognition.base.BaseActivity
+import com.example.facerecognition.customview.RecognitionListener
 import com.example.facerecognition.customview.gone
 import com.example.facerecognition.customview.visible
 import com.example.facerecognition.databinding.ActivityCameraBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
+import java.util.concurrent.Executors
 
 @AndroidEntryPoint
 class CameraActivity : BaseActivity<ActivityCameraBinding>() {
     private val viewModel: CameraCaptureViewModel by viewModels()
     private var imageCapture: ImageCapture? = null
+
     private lateinit var cameraSelector: CameraSelector
+    private lateinit var faceDetectionAnalyser: FrameDetectionAnalyser
 
     override fun bindingInflater(layoutInflater: LayoutInflater) =
         ActivityCameraBinding.inflate(layoutInflater)
 
     override fun setupView() {
         initDataFromIntent()
+        faceDetectionAnalyser = FrameDetectionAnalyser(binding.overlayView)
         if (isAllPermissionsGranted()) {
             startCamera(cameraSelector)
         } else {
@@ -45,12 +48,29 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                 REQUEST_CODE_PERMISSIONS
             )
         }
+        setupCameraButton()
+        setupOverlayView()
+    }
+
+    private fun setupCameraButton() {
         binding.btnCapture.setOnClickListener {
             takePhoto()
         }
         binding.btnSwitch.setOnClickListener {
             switchCamera()
         }
+    }
+
+    private fun setupOverlayView() {
+        binding.overlayView.recognitionListener = object : RecognitionListener {
+            override fun onFaceDetected(match: Boolean) {
+                val message: String = if (match) getString(R.string.face_found)
+                else getString(R.string.face_not_found)
+                binding.logTextView.text = message
+                Log.d(TAG, message)
+            }
+        }
+        setOverlayAbovePreviewView()
     }
 
     override fun observeData() {
@@ -103,13 +123,19 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                     it.setSurfaceProvider(viewFinder.surfaceProvider)
                 }
             imageCapture = ImageCapture.Builder().build()
+            val detectionAnalyser = ImageAnalysis.Builder()
+                .build()
+                .also {
+                    it.setAnalyzer(Executors.newSingleThreadExecutor(), faceDetectionAnalyser)
+                }
             try {
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(
                     this,
                     cameraSelector,
                     preview,
-                    imageCapture
+                    imageCapture,
+                    detectionAnalyser
                 )
             } catch (e: Exception) {
                 Log.e(TAG, "Use case binding failed", e)
@@ -148,6 +174,11 @@ class CameraActivity : BaseActivity<ActivityCameraBinding>() {
                 }
             }
         )
+    }
+
+    private fun setOverlayAbovePreviewView() {
+        binding.overlayView.setWillNotDraw(false)
+        binding.overlayView.setZOrderOnTop(true)
     }
 
     private fun isAllPermissionsGranted() = REQUIRED_PERMISSIONS.all {
