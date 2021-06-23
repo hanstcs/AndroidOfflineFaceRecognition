@@ -1,4 +1,4 @@
-# Android Offline Face Recognition
+# Android Offline Face Recognition (On Progress)
 
 This repository contains Android App for face recognition using Tensorflow Lite and MobileFaceNet. 
 
